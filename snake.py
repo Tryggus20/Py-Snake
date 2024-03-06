@@ -42,6 +42,7 @@ velocityX = 0
 velocityY = 0
 game_over = False
 score = 0
+draw_id = None 
 
 def change_direction(e): #e = event
     # print(e) 
@@ -66,7 +67,7 @@ def change_direction(e): #e = event
         velocityY = 0
 
 def reset_game():
-    global snake, food, snake_body, velocityX, velocityY, game_over, score
+    global snake, food, snake_body, velocityX, velocityY, game_over, score, draw_id
     snake.x = 5 * TILE_SIZE
     snake.y = 5 * TILE_SIZE
     food.x = 10 * TILE_SIZE
@@ -76,6 +77,8 @@ def reset_game():
     velocityY = 0
     game_over = False
     score = 0
+    if draw_id is not None:
+        window.after_cancel(draw_id)
     draw() 
 
 def move():
@@ -115,7 +118,7 @@ def move():
     snake.y += velocityY * TILE_SIZE
 
 def draw():
-    global snake, food, snake_body, game_over, score
+    global snake, food, snake_body, game_over, score, draw_id
     move()
 
     canvas.delete("all")
@@ -132,8 +135,11 @@ def draw():
         canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, font = "Arial 20", text = f"Game Over: {score}", fill = "white")
     else:
         canvas.create_text(30, 20, font ="Arial 10", text = f"Score: {score}", fill = "white")
-
-    window.after(100, draw) #Now with a whopping 60 frames per minute!
+           
+        # Cancel the previous draw call before scheduling a new one so the speed does not increase
+    if draw_id is not None:
+        window.after_cancel(draw_id)
+    draw_id = window.after(100, draw)  #Now with a whopping 60 frames per minute!
 
 draw()
 
