@@ -44,16 +44,16 @@ def change_direction(e): #e = event
     # print(e) 
     # print(e.keysym)  #prints out the keystroke
     global velocityX, velocityY
-    if (e.keysym == "Up"):
+    if (e.keysym == "Up" and veocityY != 1):
         velocityX = 0
         velocityY = -1
-    elif (e.keysym == "Down"):
+    elif (e.keysym == "Down" and velocityY != -1):
         velocityX = 0
         velocityY = 1
-    elif (e.keysym == "Left"):
+    elif (e.keysym == "Left" and velocityX != 1):
         velocityX = -1
         velocityY = 0
-    elif (e.keysym == "Right"):
+    elif (e.keysym == "Right" and velocityX != -1):
         velocityX = 1
         velocityY = 0
 
@@ -67,11 +67,13 @@ def draw():
     global snake
     move()
 
+    canvas.delete("all")
+
+    #draw food  #food first so when both occupy the same space, it only shows the snake
+    canvas.create_rectangle(food.x, food.y, food.x + TILE_SIZE, food.y + TILE_SIZE, fill = "red")
     #draw snake
     canvas.create_rectangle(snake.x, snake.y, snake.x + TILE_SIZE, snake.y + TILE_SIZE, fill = "lime green")
 
-    #draw food
-    canvas.create_rectangle(food.x, food.y, food.x + TILE_SIZE, food.y + TILE_SIZE, fill = "red")
     
     window.after(100, draw) #Now with a whopping 60 frames per minute!
 
