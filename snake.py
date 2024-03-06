@@ -37,14 +37,16 @@ window.geometry(f"{window_width}x{window_height}+{window_x}+{window_y}")
 # Game Fun
 snake = Tile(5*TILE_SIZE, 5*TILE_SIZE)
 food = Tile(10*TILE_SIZE, 10*TILE_SIZE)
+snake_body = [] #multiple snake segments
 velocityX = 0
 velocityY = 0
+game_over = False
 
 def change_direction(e): #e = event
     # print(e) 
     # print(e.keysym)  #prints out the keystroke
-    global velocityX, velocityY
-    if (e.keysym == "Up" and veocityY != 1):
+    global velocityX, velocityY, game_over
+    if (e.keysym == "Up" and velocityY != 1):
         velocityX = 0
         velocityY = -1
     elif (e.keysym == "Down" and velocityY != -1):
@@ -59,6 +61,23 @@ def change_direction(e): #e = event
 
 def move():
     global snake
+    # food collision
+    if (snake.x == food.x and snake.y == food.y):
+        snake_body.append(Tile(food.x, food.y))
+        food.x = random.randint(0, COLS-1) * TILE_SIZE
+        food.y = random.randint(0, ROWS-1) * TILE_SIZE
+
+    # update snake body
+    for i in range(len(snake_body)-1, -1, -1): 
+        tile = snake_body[i]  
+        if (i == 0):
+            tile.x = snake.x
+            tile.y = snake.y
+        else:
+            prev_tile = snake_body[i-1]
+            tile.x = prev_tile.x
+            tile.y = prev_tile.y   #inchworm style movement
+
 
     snake.x += velocityX * TILE_SIZE
     snake.y += velocityY * TILE_SIZE
@@ -74,7 +93,9 @@ def draw():
     #draw snake
     canvas.create_rectangle(snake.x, snake.y, snake.x + TILE_SIZE, snake.y + TILE_SIZE, fill = "lime green")
 
-    
+    for tile in snake_body:
+        canvas.create_rectangle(tile.x, tile.y, tile.x + TILE_SIZE, tile.y + TILE_SIZE, fill = "lime green")
+
     window.after(100, draw) #Now with a whopping 60 frames per minute!
 
 draw()
