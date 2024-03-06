@@ -47,6 +47,9 @@ def change_direction(e): #e = event
     # print(e) 
     # print(e.keysym)  #prints out the keystroke
     global velocityX, velocityY, game_over
+    if e.keysym == "space" and game_over:
+        reset_game()
+        return
     if (game_over):
         return 
     if (e.keysym == "Up" and velocityY != 1):
@@ -61,6 +64,19 @@ def change_direction(e): #e = event
     elif (e.keysym == "Right" and velocityX != -1):
         velocityX = 1
         velocityY = 0
+
+def reset_game():
+    global snake, food, snake_body, velocityX, velocityY, game_over, score
+    snake.x = 5 * TILE_SIZE
+    snake.y = 5 * TILE_SIZE
+    food.x = 10 * TILE_SIZE
+    food.y = 10 * TILE_SIZE
+    snake_body = []
+    velocityX = 0
+    velocityY = 0
+    game_over = False
+    score = 0
+    draw() 
 
 def move():
     global snake, food, snake_body, game_over, score 
